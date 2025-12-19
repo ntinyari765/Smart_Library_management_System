@@ -12,7 +12,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login({ email, password });
-      navigate("/clubs");
+      navigate("/books");
     } catch (error) {
       alert("Invalid credentials");
     }

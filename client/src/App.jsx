@@ -6,6 +6,8 @@ import Profile from "./pages/Profile";
 import Clubs from "./pages/Clubs";
 import ClubDetails from "./pages/ClubDetails";
 import Home from "./pages/Home";
+import Books from "./pages/Books";
+import Cart from "./pages/Cart";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/books" element={<Books />} />
+          <Route path="/cart" element={<Cart />} />
 
           <Route
             path="/profile"

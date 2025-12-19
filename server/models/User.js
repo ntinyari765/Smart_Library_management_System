@@ -20,7 +20,9 @@ const userSchema = new mongoose.Schema({
     rating: Number
   }],
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Book' }],
-  clubsJoined: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Club' }]
+  clubsJoined: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Club' }],
+  cart: [{ book: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' }, quantity: { type: Number, default: 1 } }]
+
 }, { timestamps: true });
 
 export default mongoose.model('User', userSchema);

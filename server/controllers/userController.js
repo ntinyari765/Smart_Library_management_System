@@ -70,3 +70,34 @@ export const getProfile = async (req, res) => {
     res.status(404).json({ message: 'User not found' });
   }
 };
+
+// Add a book to cart
+export const addToCart = async (req, res) => {
+  const { bookId, quantity } = req.body;
+  const user = await User.findById(req.user.id);
+  const existing = user.cart.find(item => item.book.toString() === bookId);
+
+  if (existing) {
+    existing.quantity += quantity || 1;
+  } else {
+    user.cart.push({ book: bookId, quantity: quantity || 1 });
+  }
+
+  await user.save();
+  res.json(user.cart);
+};
+
+// Remove a book from cart
+export const removeFromCart = async (req, res) => {
+  const user = await User.findById(req.user.id);
+  user.cart = user.cart.filter(item => item.book.toString() !== req.params.bookId);
+  await user.save();
+  res.json(user.cart);
+};
+
+// Get current user's cart
+export const getCart = async (req, res) => {
+  const user = await User.findById(req.user.id).populate('cart.book');
+  res.json(user.cart);
+};
+
