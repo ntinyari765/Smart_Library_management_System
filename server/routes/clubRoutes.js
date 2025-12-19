@@ -6,6 +6,7 @@ import {
   getClubById,
   joinClub,
   assignBook
+  leaveClub
 } from '../controllers/clubController.js';
 
 const router = express.Router();
@@ -19,6 +20,9 @@ router.route('/:id')
 
 router.route('/:id/join')
   .post(protect, joinClub);
+
+router.route('/:id/leave')
+  .post(protect, leaveClub);
 
 router.route('/:id/assign')
   .post(protect, assignBook);

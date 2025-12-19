@@ -8,10 +8,12 @@ import ClubDetails from "./pages/ClubDetails";
 import Home from "./pages/Home";
 import Books from "./pages/Books";
 import Cart from "./pages/Cart";
+import { CartProvider } from "./context/CartContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
+    <CartProvider>
     <AuthProvider>
       <BrowserRouter>
         <Routes>
@@ -50,6 +52,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </CartProvider>
   );
 }
 

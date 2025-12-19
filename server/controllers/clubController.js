@@ -41,6 +41,24 @@ export const joinClub = async (req, res) => {
   res.json({ message: 'Joined club', club });
 };
 
+// Leave club
+export const leaveClub = async (req, res) => {
+  const club = await Club.findById(req.params.id);
+  if (!club) return res.status(404).json({ message: "Club not found" });
+
+  // Remove user from club members if they are a member
+  if (club.members.includes(req.user)) {
+    club.members = club.members.filter(member => member.toString() !== req.user.toString());
+    await club.save();
+
+    // Remove club from user's clubsJoined
+    await User.findByIdAndUpdate(req.user, { $pull: { clubsJoined: club._id } });
+  }
+
+  res.json({ message: "Left club", club });
+};
+
+
 // Assign book to club
 export const assignBook = async (req, res) => {
   const club = await Club.findById(req.params.id);
