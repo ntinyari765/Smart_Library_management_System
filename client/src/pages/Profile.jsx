@@ -1,37 +1,78 @@
+// src/pages/Profile.jsx
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
+import Layout from "../components/Layout";
 
 const Profile = () => {
   const { user } = useAuth();
 
-  if (!user) return <p>Loading...</p>;
+  if (!user)
+    return (
+      <Layout>
+        <p className="text-gray-500 text-center mt-10">Loading profile...</p>
+      </Layout>
+    );
 
   return (
-    <div>
-      <h2>Profile</h2>
-      <p><strong>Name:</strong> {user.name}</p>
-      <p><strong>Email:</strong> {user.email}</p>
+    <Layout>
+      <div className="max-w-4xl mx-auto p-6">
+        {/* Header */}
+        <h2 className="text-3xl font-bold text-teal-800 mb-6">My Profile</h2>
 
-      <h3>Reading History</h3>
-      {user.readingHistory.length === 0 ? <p>No books read yet.</p> : (
-        <ul>
-          {user.readingHistory.map((book, i) => <li key={i}>{book}</li>)}
-        </ul>
-      )}
+        {/* User Info */}
+        <div className="bg-white shadow-md rounded-2xl p-6 mb-6">
+          <h3 className="text-xl font-semibold text-teal-700 mb-2">User Info</h3>
+          <p className="text-gray-700"><strong>Name:</strong> {user.name}</p>
+          <p className="text-gray-700"><strong>Email:</strong> {user.email}</p>
+        </div>
 
-      <h3>Wishlist</h3>
-      {user.wishlist.length === 0 ? <p>No books in wishlist.</p> : (
-        <ul>
-          {user.wishlist.map((book, i) => <li key={i}>{book}</li>)}
-        </ul>
-      )}
+        {/* Reading History */}
+        <div className="bg-white shadow-md rounded-2xl p-6 mb-6">
+          <h3 className="text-xl font-semibold text-teal-700 mb-4">Reading History</h3>
+          {user.readingHistory.length === 0 ? (
+            <p className="text-gray-500">No books read yet.</p>
+          ) : (
+            <ul className="list-disc list-inside text-gray-700 space-y-1">
+              {user.readingHistory.map((book, i) => (
+                <li key={i}>{book}</li>
+              ))}
+            </ul>
+          )}
+        </div>
 
-      <h3>Clubs Joined</h3>
-      {user.clubsJoined.length === 0 ? <p>Not joined any clubs yet.</p> : (
-        <ul>
-          {user.clubsJoined.map((clubId, i) => <li key={i}>{clubId}</li>)}
-        </ul>
-      )}
-    </div>
+        {/* Wishlist */}
+        <div className="bg-white shadow-md rounded-2xl p-6 mb-6">
+          <h3 className="text-xl font-semibold text-teal-700 mb-4">Wishlist</h3>
+          {user.wishlist.length === 0 ? (
+            <p className="text-gray-500">No books in wishlist.</p>
+          ) : (
+            <ul className="list-disc list-inside text-gray-700 space-y-1">
+              {user.wishlist.map((book, i) => (
+                <li key={i}>{book}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Clubs Joined */}
+        <div className="bg-white shadow-md rounded-2xl p-6 mb-6">
+          <h3 className="text-xl font-semibold text-teal-700 mb-4">Clubs Joined</h3>
+          {user.clubsJoined.length === 0 ? (
+            <p className="text-gray-500">Not joined any clubs yet.</p>
+          ) : (
+            <ul className="list-disc list-inside text-gray-700 space-y-1">
+              {user.clubsJoined.map((clubId, i) => (
+                <li key={i}>
+                  <Link to={`/clubs/${clubId}`} className="text-teal-600 hover:underline">
+                    {clubId}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </Layout>
   );
 };
 

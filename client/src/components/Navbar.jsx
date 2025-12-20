@@ -1,3 +1,4 @@
+// src/components/Navbar.jsx
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -5,7 +6,7 @@ export default function Navbar() {
   const { user, logout } = useAuth();
 
   return (
-    <nav className="bg-teal-600 text-white px-6 py-4 flex justify-between items-center shadow-md">
+    <nav className="bg-teal-300 text-white px-6 py-4 flex justify-between items-center shadow-md">
       {/* Brand */}
       <Link
         to="/"
@@ -14,7 +15,7 @@ export default function Navbar() {
         BookVerse
       </Link>
 
-      {/* Navigation */}
+      {/* Navigation Links */}
       <div className="flex items-center gap-6">
         <Link
           to="/books"
@@ -32,9 +33,12 @@ export default function Navbar() {
 
         {user ? (
           <>
-            <span className="text-sm text-teal-100 hidden sm:inline">
+            <Link
+              to="/profile"
+              className="text-sm text-teal-100 hidden sm:inline hover:underline transition"
+            >
               {user.name}
-            </span>
+            </Link>
 
             <button
               onClick={logout}
