@@ -5,15 +5,16 @@ import ClubCard from "../components/ClubCard";
 export default function Clubs() {
   const [clubs, setClubs] = useState([]);
 
+  const fetchClubs = async () => {
+    try {
+      const res = await API.get("/clubs");
+      setClubs(res.data);
+    } catch (error) {
+      console.error("Error fetching clubs:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchClubs = async () => {
-      try {
-        const res = await API.get("/clubs");
-        setClubs(res.data);
-      } catch (error) {
-        console.error("Error fetching clubs:", error);
-      }
-    };
     fetchClubs();
   }, []);
 

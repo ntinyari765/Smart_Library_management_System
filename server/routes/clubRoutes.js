@@ -5,7 +5,7 @@ import {
   getClubs,
   getClubById,
   joinClub,
-  assignBook
+  assignBook,
   leaveClub
 } from '../controllers/clubController.js';
 

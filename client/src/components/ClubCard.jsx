@@ -1,63 +1,61 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 
 const ClubCard = ({ club }) => {
   const { user } = useAuth();
-  const [joined, setJoined] = useState(club.members?.includes(user?._id));
+  const navigate = useNavigate();
+  const [joined, setJoined] = useState(false);
+
+  // Check if user is already a member (persists after refresh)
+  useEffect(() => {
+    if (user && club.members) {
+      setJoined(club.members.includes(user._id));
+    }
+  }, [club.members, user]);
 
   const handleJoin = async () => {
     if (!user) {
-      alert("You must be logged in to join a club");
+      alert("You must be logged in to join a club.");
+      return;
+    }
+    if (joined) {
+      alert("You are already part of this club!");
       return;
     }
 
     try {
-      await API.post(`/clubs/${club._id}/join`, { userId: user._id });
+      await API.post(`/clubs/${club._id}/join`);
       setJoined(true);
       alert("Successfully joined the club!");
+      // Redirect to club details page
+      navigate(`/clubs/${club._id}`);
     } catch (error) {
       console.error("Error joining club:", error);
-      alert("Failed to join club");
-    }
-  };
-
-  const handleLeave = async () => {
-    if (!user) return;
-
-    try {
-      await API.post(`/clubs/${club._id}/leave`, { userId: user._id });
-      setJoined(false);
-      alert("You have left the club.");
-    } catch (error) {
-      console.error("Error leaving club:", error);
-      alert("Failed to leave club");
+      alert("Failed to join club.");
     }
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col p-6">
+    <div className="bg-white rounded-2xl shadow-md flex flex-col p-6">
       <h3 className="text-xl font-semibold text-teal-800 mb-2">{club.name}</h3>
       <p className="text-teal-700 text-sm mb-2">{club.description}</p>
       <p className="text-teal-600 font-medium mb-4">
         Members: {club.members?.length || 0}
       </p>
 
-      {joined ? (
-        <button
-          onClick={handleLeave}
-          className="mt-auto px-4 py-2 rounded-full font-semibold text-white bg-red-500 hover:bg-red-600 transition"
-        >
-          Leave Club
-        </button>
-      ) : (
-        <button
-          onClick={handleJoin}
-          className="mt-auto px-4 py-2 rounded-full font-semibold text-white bg-gradient-to-br from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 transition"
-        >
-          Join Club
-        </button>
-      )}
+      <button
+        onClick={handleJoin}
+        className={`mt-auto px-4 py-2 rounded-full font-semibold text-white transition ${
+          joined
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-gradient-to-br from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600"
+        }`}
+        disabled={joined}
+      >
+        {joined ? "Joined" : "Join Club"}
+      </button>
     </div>
   );
 };
