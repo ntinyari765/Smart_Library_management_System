@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -220,17 +221,19 @@ textarea::placeholder {
 .card {
   background: var(--surface);
   border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.1),
-              0 2px 4px -1px rgba(13, 148, 136, 0.06);
-  padding: 1.5rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(13, 148, 136, 0.1);
+  box-shadow: 0 6px 12px -6px rgba(13, 148, 136, 0.12),
+              0 3px 6px -4px rgba(13, 148, 136, 0.06);
+  padding: 1.25rem;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(13, 148, 136, 0.08);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .card::before {
-  content: '';
+  content: ''; 
   position: absolute;
   top: 0;
   left: 0;
@@ -238,20 +241,14 @@ textarea::placeholder {
   height: 4px;
   background: linear-gradient(90deg, var(--teal-400), var(--teal-600));
   transform: scaleX(0);
-  transition: transform 0.3s ease;
+  transition: transform 0.25s ease;
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(13, 148, 136, 0.15),
-              0 10px 10px -5px rgba(13, 148, 136, 0.1);
-  border-color: var(--teal-200);
-}
-
-.card:hover::before {
-  transform: scaleX(1);
-}
-
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 18px 30px -12px rgba(13, 148, 136, 0.18),
+              0 8px 16px -8px rgba(13, 148, 136, 0.08);
+  border-color: rgba(13, 148, 136, 0.12);
 /* =====================================================
    PAGE CONTAINERS
 ===================================================== */
@@ -354,6 +351,41 @@ textarea::placeholder {
 
 .toast-in {
   animation: toastIn 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(10px) scale(0.98);
+  }
+}
+
+.toast-out {
+  animation: toastOut 220ms ease forwards;
+}
+
+.toast-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+  opacity: 0.95;
+}
+
+/* Slightly stronger primary button hover */
+.btn-primary {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 20px -6px rgba(13, 148, 136, 0.25);
 }
 
 /* =====================================================

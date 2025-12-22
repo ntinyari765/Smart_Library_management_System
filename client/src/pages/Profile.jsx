@@ -13,6 +13,10 @@ const Profile = () => {
       </Layout>
     );
 
+  const readingHistory = user.readingHistory || [];
+  const wishlist = user.wishlist || [];
+  const clubsJoined = user.clubsJoined || [];
+
   return (
     <Layout>
       <div className="max-w-4xl mx-auto p-6">
@@ -29,11 +33,11 @@ const Profile = () => {
         {/* Reading History */}
         <div className="bg-white shadow-md rounded-2xl p-6 mb-6">
           <h3 className="text-xl font-semibold text-teal-700 mb-4">Reading History</h3>
-          {user.readingHistory.length === 0 ? (
+          {readingHistory.length === 0 ? (
             <p className="text-gray-500">No books read yet.</p>
           ) : (
             <ul className="list-disc list-inside text-gray-700 space-y-1">
-              {user.readingHistory.map((book, i) => (
+              {readingHistory.map((book, i) => (
                 <li key={i}>{book}</li>
               ))}
             </ul>
@@ -43,11 +47,11 @@ const Profile = () => {
         {/* Wishlist */}
         <div className="bg-white shadow-md rounded-2xl p-6 mb-6">
           <h3 className="text-xl font-semibold text-teal-700 mb-4">Wishlist</h3>
-          {user.wishlist.length === 0 ? (
+          {wishlist.length === 0 ? (
             <p className="text-gray-500">No books in wishlist.</p>
           ) : (
             <ul className="list-disc list-inside text-gray-700 space-y-1">
-              {user.wishlist.map((book, i) => (
+              {wishlist.map((book, i) => (
                 <li key={i}>{book}</li>
               ))}
             </ul>
@@ -57,17 +61,21 @@ const Profile = () => {
         {/* Clubs Joined */}
         <div className="bg-white shadow-md rounded-2xl p-6 mb-6">
           <h3 className="text-xl font-semibold text-teal-700 mb-4">Clubs Joined</h3>
-          {user.clubsJoined.length === 0 ? (
+          {clubsJoined.length === 0 ? (
             <p className="text-gray-500">Not joined any clubs yet.</p>
           ) : (
             <ul className="list-disc list-inside text-gray-700 space-y-1">
-              {user.clubsJoined.map((clubId, i) => (
-                <li key={i}>
-                  <Link to={`/clubs/${clubId}`} className="text-teal-600 hover:underline">
-                    {clubId}
-                  </Link>
-                </li>
-              ))}
+              {clubsJoined.map((c, i) => {
+                const id = c?._id || c;
+                const label = c?.name || c?.title || id;
+                return (
+                  <li key={i}>
+                    <Link to={`/clubs/${id}`} className="text-teal-600 hover:underline">
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

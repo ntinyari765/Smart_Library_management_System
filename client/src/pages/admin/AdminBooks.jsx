@@ -159,7 +159,7 @@ export default function AdminBooks() {
             />
             <button
               type="submit"
-              className="bg-gradient-to-br from-teal-600 to-teal-500 text-white px-6 py-3 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition"
+              className="btn-primary px-6 py-3 rounded-full font-semibold"
             >
               Add Book
             </button>

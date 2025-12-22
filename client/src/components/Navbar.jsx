@@ -1,16 +1,25 @@
 // src/components/Navbar.jsx
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+
+  const handleLogout = () => {
+    logout();
+    showToast("Logged out", "success");
+    navigate("/login");
+  };
 
   return (
-    <nav className="bg-teal-300 text-white px-6 py-4 flex justify-between items-center shadow-md">
+    <nav className="bg-gradient-to-r from-teal-600 to-teal-500 text-white px-6 py-4 flex justify-between items-center shadow-md">
       {/* Brand */}
       <Link
         to="/"
-        className="text-2xl font-semibold tracking-tight hover:text-teal-100 transition"
+        className="text-2xl font-semibold tracking-tight !text-white !hover:text-teal-100 transition"
       >
         BookVerse
       </Link>
@@ -22,14 +31,14 @@ export default function Navbar() {
           <>
             <Link
               to="/books"
-              className="hover:text-teal-100 transition font-medium"
+              className="!text-white !hover:text-teal-100 transition font-medium"
             >
               Books
             </Link>
 
             <Link
               to="/clubs"
-              className="hover:text-teal-100 transition font-medium"
+              className="!text-white !hover:text-teal-100 transition font-medium"
             >
               Clubs
             </Link>
@@ -40,13 +49,13 @@ export default function Navbar() {
           <>
             <Link
               to="/profile"
-              className="text-sm text-teal-100 hidden sm:inline hover:underline transition"
+              className="text-sm !text-white hidden sm:inline !hover:underline transition"
             >
               {user.name}
             </Link>
 
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="bg-white text-teal-600 px-4 py-1.5 rounded-lg font-medium hover:bg-teal-50 transition"
             >
               Logout
@@ -55,7 +64,7 @@ export default function Navbar() {
         ) : (
           <Link
             to="/login"
-            className="border border-white px-4 py-1.5 rounded-lg font-medium hover:bg-white hover:text-teal-600 transition"
+            className="border border-white !text-white px-4 py-1.5 rounded-lg font-medium hover:bg-white hover:text-teal-600 transition"
           >
             Login
           </Link>

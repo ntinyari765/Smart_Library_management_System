@@ -40,7 +40,7 @@ const ClubCard = ({ club }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md flex flex-col p-6">
+    <div className="card p-6">
       <h3 className="text-xl font-semibold text-teal-800 mb-2">{club.name}</h3>
       <p className="text-teal-700 text-sm mb-2">{club.description}</p>
       <p className="text-teal-600 font-medium mb-4">
@@ -49,10 +49,8 @@ const ClubCard = ({ club }) => {
 
       <button
         onClick={handleJoin}
-        className={`mt-auto px-4 py-2 rounded-full font-semibold text-white transition ${
-          joined
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-gradient-to-br from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600"
+        className={`mt-auto btn-primary px-4 py-2 rounded-full font-semibold text-white ${
+          joined ? "opacity-60 cursor-not-allowed" : ""
         }`}
         disabled={joined}
       >

@@ -6,8 +6,13 @@ export default function AdminRoute({ children }) {
 
   if (loading) return <p>Loading...</p>; // or a spinner
 
-  if (!user || !user.isAdmin) {
-    // If not logged in or not admin, redirect to home
+  if (!user) {
+    // If not logged in, redirect to login
+    return <Navigate to="/login" />;
+  }
+
+  if (!user.isAdmin) {
+    // If logged in but not an admin, redirect to home
     return <Navigate to="/" />;
   }
 

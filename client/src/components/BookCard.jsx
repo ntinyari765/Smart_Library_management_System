@@ -7,11 +7,12 @@ const BookCard = ({ book }) => {
   const inCart = cart.find((item) => item._id === book._id);
 
   return (
-    <div className="bg-white border border-teal-100 shadow-sm hover:shadow-md rounded-2xl overflow-hidden flex flex-col">
+    <div className="card overflow-hidden flex flex-col">
       <img
         src={book.coverImage || "https://via.placeholder.com/200x250?text=No+Image"}
+        loading="lazy"
         alt={book.title}
-        className="w-full h-60 object-cover"
+        className="w-full h-60 object-cover bg-gray-100"
       />
 
       <div className="p-4 flex flex-col flex-1">
@@ -22,10 +23,8 @@ const BookCard = ({ book }) => {
 
         <button
           onClick={() => addToCart(book)}
-          className={`mt-4 px-4 py-2 rounded-full font-semibold text-white transition ${
-            inCart
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-br from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600"
+          className={`mt-4 btn-primary px-4 py-2 rounded-full font-semibold text-white ${
+            inCart ? "opacity-60 cursor-not-allowed" : ""
           }`}
           disabled={inCart}
         >

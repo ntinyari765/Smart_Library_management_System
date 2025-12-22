@@ -108,7 +108,7 @@ export default function AdminClubs() {
             <p className="text-sm text-gray-500 mt-1">Enter dates as <code>YYYY-MM-DD</code> or ISO <code>YYYY-MM-DDTHH:mm</code>, separated by commas.</p>
             <button
               type="submit"
-              className="bg-gradient-to-br from-teal-600 to-teal-500 text-white px-6 py-3 rounded-full font-semibold hover:from-teal-700 hover:to-teal-600 transition"
+              className="btn-primary px-6 py-3 rounded-full font-semibold"
             >
               Add Club
             </button>
