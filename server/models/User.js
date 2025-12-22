@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+   isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+  role: { type: String, enum: ["user", "admin"], default: "user" },
   readingHistory: [{
     book: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' },
     status: { type: String, enum: ['reading', 'finished', 'to-read', 'purchased'], default: 'to-read' },

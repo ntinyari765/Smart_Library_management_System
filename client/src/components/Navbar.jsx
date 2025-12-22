@@ -17,19 +17,24 @@ export default function Navbar() {
 
       {/* Navigation Links */}
       <div className="flex items-center gap-6">
-        <Link
-          to="/books"
-          className="hover:text-teal-100 transition font-medium"
-        >
-          Books
-        </Link>
+        {/* Show Books & Clubs only for non-admin users */}
+        {!user?.isAdmin && (
+          <>
+            <Link
+              to="/books"
+              className="hover:text-teal-100 transition font-medium"
+            >
+              Books
+            </Link>
 
-        <Link
-          to="/clubs"
-          className="hover:text-teal-100 transition font-medium"
-        >
-          Clubs
-        </Link>
+            <Link
+              to="/clubs"
+              className="hover:text-teal-100 transition font-medium"
+            >
+              Clubs
+            </Link>
+          </>
+        )}
 
         {user ? (
           <>

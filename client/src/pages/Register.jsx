@@ -1,22 +1,26 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../api/axios";
+import { useToast } from "../context/ToastContext";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await API.post("/auth/register", { name, email, password });
+      showToast("Registration successful!", "success");
       navigate("/login");
     } catch (error) {
-      alert("Registration failed");
+      const msg = error.response?.data?.message || "Registration failed";
+      showToast(msg, "error");
     }
-  };
+  }; 
 
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-teal-100">

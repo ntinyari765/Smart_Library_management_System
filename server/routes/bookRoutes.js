@@ -1,5 +1,6 @@
 import express from 'express';
-import { protect } from '../middleware/authMiddleware.js';
+import { protect } from '../middleware/authmiddleware.js';
+import { admin } from '../middleware/admin.js';
 import {
   createBook,
   getBooks,
@@ -18,5 +19,10 @@ router.route('/:id')
   .get(getBookById)
   .put(protect, updateBook)
   .delete(protect, deleteBook);
+
+// Admin-only routes
+router.post("/", protect, admin, createBook);
+router.put("/:id", protect, admin, updateBook);
+router.delete("/:id", protect, admin, deleteBook);
 
 export default router;

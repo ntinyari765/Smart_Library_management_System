@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 const ClubCard = ({ club }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [joined, setJoined] = useState(false);
+  const { showToast } = useToast();
 
   // Check if user is already a member (persists after refresh)
   useEffect(() => {
@@ -17,23 +19,23 @@ const ClubCard = ({ club }) => {
 
   const handleJoin = async () => {
     if (!user) {
-      alert("You must be logged in to join a club.");
+      showToast("You must be logged in to join a club.", "error");
       return;
     }
     if (joined) {
-      alert("You are already part of this club!");
+      showToast("You are already part of this club!", "info");
       return;
     }
 
     try {
       await API.post(`/clubs/${club._id}/join`);
       setJoined(true);
-      alert("Successfully joined the club!");
+      showToast("Successfully joined the club!", "success");
       // Redirect to club details page
       navigate(`/clubs/${club._id}`);
     } catch (error) {
       console.error("Error joining club:", error);
-      alert("Failed to join club.");
+      showToast("Failed to join club.", "error");
     }
   };
 

@@ -62,6 +62,8 @@ export const getProfile = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role,
+      isAdmin: user.role === 'admin',
       readingHistory: user.readingHistory,
       wishlist: user.wishlist,
       clubsJoined: user.clubsJoined,
@@ -74,7 +76,9 @@ export const getProfile = async (req, res) => {
 // Add a book to cart
 export const addToCart = async (req, res) => {
   const { bookId, quantity } = req.body;
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user);
+  if (!user) return res.status(401).json({ message: 'User not found' });
+
   const existing = user.cart.find(item => item.book.toString() === bookId);
 
   if (existing) {
@@ -89,7 +93,8 @@ export const addToCart = async (req, res) => {
 
 // Remove a book from cart
 export const removeFromCart = async (req, res) => {
-  const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user);
+  if (!user) return res.status(401).json({ message: 'User not found' });
   user.cart = user.cart.filter(item => item.book.toString() !== req.params.bookId);
   await user.save();
   res.json(user.cart);
@@ -97,7 +102,8 @@ export const removeFromCart = async (req, res) => {
 
 // Get current user's cart
 export const getCart = async (req, res) => {
-  const user = await User.findById(req.user.id).populate('cart.book');
+  const user = await User.findById(req.user).populate('cart.book');
+  if (!user) return res.status(401).json({ message: 'User not found' });
   res.json(user.cart);
 };
 

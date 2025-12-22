@@ -1,20 +1,32 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login({ email, password });
-      navigate("/books");
+      const loggedInUser = await login({ email, password });
+
+      // Show success toast
+      showToast("Welcome back!", "success");
+
+      // Use returned user to avoid race condition with context state
+      if (loggedInUser?.role === "admin" || loggedInUser?.isAdmin) {
+        navigate("/admin/books");
+      } else {
+        navigate("/books");
+      }
     } catch (error) {
-      alert("Invalid credentials");
+      const msg = error.response?.data?.message || error.message || "Login failed";
+      showToast(msg, "error");
     }
   };
 

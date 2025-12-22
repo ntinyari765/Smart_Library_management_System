@@ -2,6 +2,7 @@ import express from 'express';
 import { getProfile, registerUser, loginUser } from '../controllers/userController.js';
 import { addToCart, removeFromCart, getCart } from "../controllers/userController.js";
 import { protect } from '../middleware/authmiddleware.js';
+import User from "../models/User.js";
 
 const router = express.Router();
 

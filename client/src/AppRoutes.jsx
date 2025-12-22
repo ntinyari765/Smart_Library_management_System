@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import { CartProvider } from "./context/CartContext";
+// src/AppRoutes.jsx
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -10,14 +10,16 @@ import ClubDetails from "./pages/ClubDetails";
 import Home from "./pages/Home";
 import Books from "./pages/Books";
 import Cart from "./pages/Cart";
+
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
 import AdminBooks from "./pages/admin/AdminBooks";
 import AdminClubs from "./pages/admin/AdminClubs";
 
-function AppRoutes() {
+export default function AppRoutes() {
   const { user, loading } = useAuth();
 
-  if (loading) return null; // prevents redirect flicker
+  if (loading) return <p>Loading...</p>;
 
   return (
     <Routes>
@@ -58,28 +60,20 @@ function AppRoutes() {
       <Route
         path="/admin/books"
         element={
-          user?.isAdmin ? <AdminBooks /> : <Navigate to="/" />
+          <AdminRoute>
+            <AdminBooks />
+          </AdminRoute>
         }
       />
 
       <Route
         path="/admin/clubs"
         element={
-          user?.isAdmin ? <AdminClubs /> : <Navigate to="/" />
+          <AdminRoute>
+            <AdminClubs />
+          </AdminRoute>
         }
       />
     </Routes>
-  );
-}
-
-export default function App() {
-  return (
-    <CartProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </AuthProvider>
-    </CartProvider>
   );
 }

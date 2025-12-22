@@ -3,11 +3,13 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 import Layout from "../components/Layout";
 
 export default function ClubDetails() {
   const { id } = useParams();
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [club, setClub] = useState(null);
   const [loading, setLoading] = useState(true);
   const [joined, setJoined] = useState(false);
@@ -31,19 +33,25 @@ export default function ClubDetails() {
   }, [id, user]);
 
   const handleJoin = async () => {
-    if (!user) return alert("You must be logged in to join this club.");
-    if (joined) return alert("You are already part of this club!");
+    if (!user) {
+      showToast("You must be logged in to join this club.", "error");
+      return;
+    }
+    if (joined) {
+      showToast("You are already part of this club!", "info");
+      return;
+    }
 
     try {
       await API.post(`/clubs/${id}/join`);
       setJoined(true);
       setClub((prev) => ({ ...prev, members: [...prev.members, user._id] }));
-      alert("Successfully joined the club!");
+      showToast("Successfully joined the club!", "success");
     } catch (err) {
       console.error(err);
-      alert("Failed to join club.");
+      showToast("Failed to join club.", "error");
     }
-  };
+  }; 
 
   const handleLeave = async () => {
     if (!user || !joined) return;
@@ -55,10 +63,10 @@ export default function ClubDetails() {
         ...prev,
         members: prev.members.filter((m) => m._id !== user._id && m !== user._id),
       }));
-      alert("You have left the club.");
+      showToast("You have left the club.", "success");
     } catch (err) {
       console.error(err);
-      alert("Failed to leave club.");
+      showToast("Failed to leave club.", "error");
     }
   };
 
