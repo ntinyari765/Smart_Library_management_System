@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import AdminBooks from "./pages/admin/AdminBooks";
 import AdminClubs from "./pages/admin/AdminClubs";
+import MyBorrowedBooks from "./pages/MyBorrowedBooks";
 
 export default function AppRoutes() {
   const { user, loading } = useAuth();
@@ -63,6 +64,15 @@ export default function AppRoutes() {
           <AdminRoute>
             <AdminBooks />
           </AdminRoute>
+        }
+      />
+
+      <Route
+        path="/borrowed"
+        element={
+          <ProtectedRoute>
+            <MyBorrowedBooks />
+          </ProtectedRoute>
         }
       />
 

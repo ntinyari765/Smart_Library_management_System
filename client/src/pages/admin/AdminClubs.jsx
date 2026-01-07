@@ -14,6 +14,11 @@ export default function AdminClubs() {
     bookAssigned: "",
     meetingDates: "",
   });
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({ name: "", description: "", bookAssigned: "", meetingDates: "" });
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+
   const { showToast } = useToast();
 
   // Fetch clubs
@@ -48,10 +53,52 @@ export default function AdminClubs() {
       await API.post("/clubs", payload);
       showToast("Club added!", "success");
       setFormData({ name: "", description: "", bookAssigned: "", meetingDates: "" });
+      // Refresh list
+      const res = await API.get('/clubs');
+      setClubs(res.data);
     } catch (err) {
       console.error(err);
       const msg = err.response?.data?.message || err.message || "Failed to add club";
       showToast(msg, "error");
+    }
+  };
+
+  const handleSaveEdit = async (id) => {
+    setSaving(true);
+    try {
+      const dates = (editData.meetingDates || "")
+        .split(",")
+        .map((d) => new Date(d.trim()))
+        .filter((d) => !isNaN(d.getTime()))
+        .map((d) => d.toISOString());
+
+      const payload = { ...editData, meetingDates: dates };
+      const res = await API.put(`/clubs/${id}`, payload);
+      showToast("Club updated", "success");
+      setEditingId(null);
+      setEditData({ name: '', description: '', bookAssigned: '', meetingDates: '' });
+      // update local list
+      setClubs((prev) => prev.map(c => c._id === id ? res.data : c));
+    } catch (err) {
+      console.error('Error updating club:', err);
+      showToast(err.response?.data?.message || 'Error updating club', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this club? This action cannot be undone.')) return;
+    setDeletingId(id);
+    try {
+      await API.delete(`/clubs/${id}`);
+      showToast('Club deleted', 'success');
+      setClubs((prev) => prev.filter(c => c._id !== id));
+    } catch (err) {
+      console.error('Error deleting club:', err);
+      showToast(err.response?.data?.message || 'Error deleting club', 'error');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -124,13 +171,65 @@ export default function AdminClubs() {
             <ul className="space-y-3">
               {clubs.map((club) => (
                 <li key={club._id} className="flex justify-between items-center border-b pb-2">
-                  <div>
-                    <p className="font-semibold">{club.name}</p>
-                    <p className="text-gray-600 text-sm">{club.description}</p>
+                  <div className="flex-1">
+                    {editingId === club._id ? (
+                      <div className="space-y-2">
+                        <input
+                          value={editData.name}
+                          onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                          className="w-full p-2 border rounded"
+                        />
+                        <textarea
+                          value={editData.description}
+                          onChange={(e) => setEditData({ ...editData, description: e.target.value })}
+                          className="w-full p-2 border rounded"
+                        />
+                        <input
+                          value={editData.bookAssigned}
+                          onChange={(e) => setEditData({ ...editData, bookAssigned: e.target.value })}
+                          className="w-full p-2 border rounded"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleSaveEdit(club._id)}
+                            disabled={saving}
+                            className="bg-teal-600 text-white px-3 py-1 rounded-lg font-medium"
+                          >
+                            {saving ? 'Saving...' : 'Save'}
+                          </button>
+                          <button
+                            onClick={() => { setEditingId(null); setEditData({ name: '', description: '', bookAssigned: '', meetingDates: '' }); }}
+                            className="bg-gray-200 px-3 py-1 rounded-lg"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="font-semibold">{club.name}</p>
+                        <p className="text-gray-600 text-sm">{club.description}</p>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex gap-2">
-                    <button className="bg-yellow-400 px-3 py-1 rounded-lg font-medium">Edit</button>
-                    <button className="bg-red-500 text-white px-3 py-1 rounded-lg font-medium">Delete</button>
+                  <div className="flex gap-2 ml-4">
+                    {editingId !== club._id && (
+                      <>
+                        <button
+                          onClick={() => { setEditingId(club._id); setEditData({ name: club.name || '', description: club.description || '', bookAssigned: (club.bookAssigned && (club.bookAssigned._id || club.bookAssigned)) || '', meetingDates: (club.meetingDates || []).join(', ') }); }}
+                          className="bg-yellow-400 px-3 py-1 rounded-lg font-medium"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(club._id)}
+                          disabled={deletingId === club._id}
+                          className="bg-red-500 text-white px-3 py-1 rounded-lg font-medium"
+                        >
+                          {deletingId === club._id ? 'Deleting...' : 'Delete'}
+                        </button>
+                      </>
+                    )}
                   </div>
                 </li>
               ))}

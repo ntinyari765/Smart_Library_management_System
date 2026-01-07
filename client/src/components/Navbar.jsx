@@ -42,7 +42,31 @@ export default function Navbar() {
             >
               Clubs
             </Link>
+
+            <Link
+              to="/borrowed"
+              className="!text-white !hover:text-teal-100 transition font-medium"
+            >
+              Borrowed
+            </Link>
+
+            <Link
+              to="/read-demo"
+              className="!text-white !hover:text-teal-100 transition font-medium hidden"
+            >
+              Read (demo)
+            </Link>
           </>
+        )}
+
+        {/* Admin quick link */}
+        {user?.isAdmin && (
+          <Link
+            to="/admin/borrow-history"
+            className="!text-white !hover:text-teal-100 transition font-medium"
+          >
+            Borrow History
+          </Link>
         )}
 
         {user ? (

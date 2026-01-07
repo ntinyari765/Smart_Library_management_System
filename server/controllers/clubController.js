@@ -97,10 +97,45 @@ export const updateClub = async (req, res) => {
     const club = await Club.findById(req.params.id);
     if (!club) return res.status(404).json({ message: "Club not found" });
 
-    Object.assign(club, req.body);
+    const { name, description, bookAssigned, meetingDates } = req.body;
+
+    if (name !== undefined) club.name = name;
+    if (description !== undefined) club.description = description;
+
+    // Resolve bookAssigned: accept ObjectId or existing book title
+    if (bookAssigned !== undefined) {
+      if (!bookAssigned) {
+        club.bookAssigned = null;
+      } else if (mongoose.Types.ObjectId.isValid(bookAssigned)) {
+        const exists = await Book.findById(bookAssigned);
+        if (!exists) return res.status(400).json({ message: `Book with id ${bookAssigned} not found` });
+        club.bookAssigned = bookAssigned;
+      } else {
+        const found = await Book.findOne({ title: { $regex: `^${bookAssigned}$`, $options: 'i' } });
+        if (!found) return res.status(400).json({ message: `bookAssigned must be a book _id or existing book title; book not found: "${bookAssigned}"` });
+        club.bookAssigned = found._id;
+      }
+    }
+
+    // Parse meetingDates if provided (accept comma-separated or array)
+    if (meetingDates !== undefined) {
+      let datesArr = [];
+      if (Array.isArray(meetingDates)) {
+        datesArr = meetingDates.filter(d => !!d).map(d => new Date(d).toISOString());
+      } else if (typeof meetingDates === 'string') {
+        datesArr = meetingDates
+          .split(',')
+          .map(d => new Date(d.trim()))
+          .filter(d => !isNaN(d.getTime()))
+          .map(d => d.toISOString());
+      }
+      club.meetingDates = datesArr;
+    }
+
     await club.save();
     res.json(club);
   } catch (error) {
+    console.error('Error updating club:', error.stack || error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -108,12 +143,18 @@ export const updateClub = async (req, res) => {
 // Delete club (Admin only)
 export const deleteClub = async (req, res) => {
   try {
-    const club = await Club.findById(req.params.id);
-    if (!club) return res.status(404).json({ message: "Club not found" });
+    const deleted = await Club.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Club not found" });
 
-    await club.remove();
+    // Also remove club id from users' clubsJoined arrays
+    await User.updateMany(
+      { clubsJoined: deleted._id },
+      { $pull: { clubsJoined: deleted._id } }
+    );
+
     res.json({ message: "Club deleted" });
   } catch (error) {
+    console.error('Error deleting club:', error);
     res.status(500).json({ message: error.message });
   }
 };

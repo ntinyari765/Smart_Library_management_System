@@ -5,20 +5,27 @@ import { Link } from "react-router-dom";
 import BookCard from "../components/BookCard";
 import { useCart } from "../context/CartContext";
 import Layout from "../components/Layout";
+import { useUser } from "../context/UserContext"; // assume you have a context for current user
+import { useToast } from "../context/ToastContext";
 
 export default function Books() {
   const [books, setBooks] = useState([]);
   const { cart } = useCart();
+  const { user } = useUser(); // current logged-in user
+  const { showToast } = useToast();
+
+  // Fetch books
+  const fetchBooks = async () => {
+    try {
+      const res = await API.get("/books");
+      setBooks(res.data);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      showToast("Failed to fetch books", "error");
+    }
+  };
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const res = await API.get("/books");
-        setBooks(res.data);
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      }
-    };
     fetchBooks();
   }, []);
 
@@ -55,7 +62,14 @@ export default function Books() {
               No books available
             </p>
           ) : (
-            books.map((book) => <BookCard key={book._id} book={book} />)
+            books.map((book) => (
+              <BookCard
+                key={book._id}
+                book={book}
+                userId={user?._id}        // Pass current user ID
+                refreshBooks={fetchBooks}  // Pass refresh callback
+              />
+            ))
           )}
         </div>
       </div>

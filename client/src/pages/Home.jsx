@@ -11,11 +11,15 @@ export default function Home() {
         {/* HERO SECTION */}
         <section className="bg-gradient-to-br from-teal-600 to-teal-500 text-white">
           <div className="max-w-7xl mx-auto px-6 py-28 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight text-white">
+              BookVerse
+            </h1>
+
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
               A Smarter Way to Read&nbsp; 
               <br className="hidden md:block" />
              and Connect
-            </h1>
+            </h2>
 
             <p className="max-w-2xl mx-auto text-lg text-teal-100 mb-12">
               BookVerse combines a smart digital library with interactive book
